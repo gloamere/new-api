@@ -22,6 +22,8 @@
 
 本次部署：官方上游 `ea343c4a81151bfd537d33b66527c25fa21a1112` 的 201 个提交已快进到 dev，再将部署配置提交 `cf99b02e8350d0f0f71890606d8948336da9a880` 合入 main。远端 origin/dev、origin/main 已同步；部署标签为 `deploy-tencent-newapi-20261031-cf99b02e8`。应用源码为该 main 提交中的上游代码，部署配置为同一提交新增的三个文件。镜像 `gloamere/new-api:ea343c4a8-20261031`，ID `sha256:df5d477dd08cdde6a57a62490c65827e96e4d15ae74592cf856a31e67a8a9b31`。
 
-公网域名 `api.gloamere.cn`，DNSPod A 记录为 `175.24.190.175`、TTL 600。由现有 `dujiao-next-caddy` 热重载新增独立站点，原站点保留；变更前备份 `/opt/dujiao-next/shared/caddy/Caddyfile.bak-newapi-20261031`。初始化完成前公网仅返回 503 提示；管理员在本地 SSH 隧道 `http://127.0.0.1:13000/setup` 自行设置密码。开放公网前将 `runtime.env` 设置为 `SESSION_COOKIE_SECURE=true`、`SESSION_COOKIE_TRUSTED_URL=https://api.gloamere.cn`、`TRUSTED_PROXIES=127.0.0.1/32,172.16.0.0/12`，再仅重建本项目应用容器。
+公网域名 `api.gloamere.cn`，DNSPod A 记录为 `175.24.190.175`、TTL 600。由现有 `dujiao-next-caddy` 热重载新增独立站点，原站点保留；变更前备份 `/opt/dujiao-next/shared/caddy/Caddyfile.bak-newapi-20261031`。初始化完成前公网仅返回 503 提示；管理员在本地 SSH 隧道 `http://127.0.0.1:13000/setup` 自行设置密码。开放公网前将 `runtime.env` 设置为 `SESSION_COOKIE_SECURE=true`、`SESSION_COOKIE_TRUSTED_URL=https://api.gloamere.cn`、`TRUSTED_PROXIES=127.0.0.1/32,172.21.0.1/32`，再仅重建本项目应用容器。
 
 已验证：前端 1410 文件类型检查、生产构建、relaykit/tokenkit 独立编译及根模块应用编译；Compose 校验、PostgreSQL 与应用健康、版本回读、DNS 与有效 HTTPS。未执行全量自动化测试，也未配置模型渠道或进行付费推理验证。构建器与其缓存已移除；初次准备下载的旧版 Go/Bun 及未使用 Debian 镜像已清理。源码恢复目录保留 `/opt/new-api/releases/ea343c4a8`，配置和数据库备份保留 `/opt/new-api/backups`。
+
+2026-10-31 19:35（Asia/Shanghai）上线回读：用户已自行初始化管理员（1 个 root、1 条 setup 记录）；安全 Cookie、HTTPS 精确 Origin 与网桥网关代理白名单已应用，Caddy 正式反代已开启。公网首页/状态接口 200，未认证 `/v1/models` 为 401，商城仍为 200。初始化后备份 `/opt/new-api/backups/20261031T113500Z`。临时本地初始化隧道收尾关闭，正式入口为 `https://api.gloamere.cn`。尚未配置模型渠道或桌宠集成。
