@@ -1,0 +1,23 @@
+services:
+  consent:
+    image: mirror.ccs.tencentyun.com/library/node:26-alpine
+    container_name: new-api-companion-consent
+    network_mode: host
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 192m
+    cpus: 0.5
+    environment:
+      NEW_API_ORIGIN: http://127.0.0.1:13000
+      COMPANION_CLOUD_DB: /data/consent.sqlite
+    volumes:
+      - ./server.cjs:/app/server.cjs:ro
+      - ./data:/data
+    command: [node, /app/server.cjs]
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:13301/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 6s
+      retries: 3
