@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "registry": "default",
+  "environments": {
+    "production": {
+      "server": "hongkong-01",
+      "remote_path": "/opt/new-api",
+      "databases": [
+        "new-api-postgres"
+      ],
+      "services": [
+        "new-api-new-api-1"
+      ]
+    },
+    "tencent-production": {
+      "server": "tencent-cloud-01",
+      "remote_path": "/opt/new-api",
+      "databases": [
+        "new-api-postgres"
+      ],
+      "services": [
+        "new-api-tencent",
+        "new-api-tencent-postgres"
+      ]
+    }
+  }
+}
